@@ -1,0 +1,230 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ============================================================
+   AUREUM — Design tokens (light editorial auction house)
+   Semantic tokens only. Never reference raw hex in components.
+   ============================================================ */
+:root {
+  /* Stored as raw RGB channels ("R G B") so both Tailwind alpha modifiers
+     and direct rgb(var(--x) / a) usage work. */
+  --color-canvas: 250 248 243; /* warm ivory background */
+  --color-surface: 255 255 255;
+  --color-surface-2: 242 239 232;
+
+  --color-ink: 26 24 21; /* warm near-black */
+  --color-ink-soft: 87 82 74; /* secondary text (>=4.5:1 on canvas) */
+  --color-ink-muted: 131 125 113; /* captions / tertiary */
+
+  --color-line: 231 226 215;
+  --color-line-strong: 215 208 194;
+
+  --color-brand: 154 111 52; /* brass / gold accent */
+  --color-brand-ink: 255 255 255; /* text on brand fill */
+
+  --color-bid: 47 122 85; /* botanical green — winning / price up */
+  --color-outbid: 178 59 46; /* brick red — outbid / ending soon */
+}
+
+/* ============================================================
+   Base
+   ============================================================ */
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+  body {
+    margin: 0;
+    min-height: 100dvh;
+    background-color: rgb(var(--color-canvas));
+    color: rgb(var(--color-ink));
+    font-family: Inter, system-ui, -apple-system, "Segoe UI", sans-serif;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    line-height: 1.6;
+  }
+
+  ::selection {
+    background: rgb(var(--color-brand) / 0.18);
+    color: rgb(var(--color-ink));
+  }
+
+  /* Consistent, visible keyboard focus everywhere */
+  :focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 3px rgb(var(--color-brand) / 0.2),
+      0 0 0 1px rgb(var(--color-brand));
+    border-radius: 6px;
+  }
+
+  /* Tabular figures for prices, bids and countdowns to prevent jitter */
+  .tnum {
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: "tnum";
+  }
+}
+
+/* ============================================================
+   Components
+   ============================================================ */
+@layer components {
+  .container-content {
+    @apply mx-auto w-full max-w-content px-5 sm:px-6 lg:px-8;
+  }
+
+  /* Eyebrow / kicker label */
+  .eyebrow {
+    @apply inline-flex items-center gap-2 font-sans text-xs font-semibold uppercase tracking-brand text-brand;
+  }
+
+  /* Buttons ------------------------------------------------- */
+  .btn {
+    @apply inline-flex select-none items-center justify-center gap-2 rounded-pill text-sm font-semibold
+      transition-all duration-200 ease-editorial disabled:cursor-not-allowed disabled:opacity-50;
+    min-height: 44px;
+    padding: 0 1.4rem;
+    cursor: pointer;
+  }
+  .btn-brand {
+    @apply btn bg-brand text-brand-ink shadow-subtle hover:shadow-lift;
+  }
+  .btn-brand:hover:not(:disabled) {
+    filter: brightness(1.06);
+    transform: translateY(-1px);
+  }
+  .btn-dark {
+    @apply btn bg-ink text-canvas hover:shadow-lift;
+  }
+  .btn-dark:hover:not(:disabled) {
+    transform: translateY(-1px);
+  }
+  .btn-outline {
+    @apply btn border border-line-strong bg-surface text-ink hover:border-ink hover:bg-surface-2;
+  }
+  .btn-ghost {
+    @apply btn bg-transparent text-ink-soft hover:bg-surface-2 hover:text-ink;
+  }
+  .btn-sm {
+    @apply text-xs;
+    min-height: 38px;
+    padding: 0 1rem;
+  }
+  .btn-lg {
+    @apply text-base;
+    min-height: 52px;
+    padding: 0 2rem;
+  }
+
+  /* Cards --------------------------------------------------- */
+  .card-surface {
+    @apply rounded-card border border-line bg-surface shadow-subtle;
+  }
+  .lot-card {
+    @apply relative flex flex-col overflow-hidden rounded-card border border-line bg-surface
+      shadow-subtle transition-all duration-300 ease-editorial;
+  }
+  .lot-card:hover {
+    @apply shadow-lift;
+    transform: translateY(-4px);
+    border-color: rgb(var(--color-line-strong));
+  }
+
+  /* Badges / pills ----------------------------------------- */
+  .badge {
+    @apply inline-flex items-center gap-1.5 rounded-pill px-2.5 py-1 text-xs font-semibold;
+  }
+  .badge-bid {
+    @apply badge bg-bid-soft text-bid;
+  }
+  .badge-outbid {
+    @apply badge bg-outbid-soft text-outbid;
+  }
+  .badge-neutral {
+    @apply badge border border-line bg-surface-2 text-ink-soft;
+  }
+  .badge-live {
+    @apply badge bg-outbid text-white;
+  }
+
+  /* Inputs -------------------------------------------------- */
+  .field {
+    @apply w-full rounded-xl border border-line-strong bg-surface px-4 py-3 text-ink
+      placeholder:text-ink-muted transition-colors duration-200;
+    min-height: 48px;
+  }
+  .field:focus {
+    outline: none;
+    border-color: rgb(var(--color-brand));
+    box-shadow: 0 0 0 3px rgb(var(--color-brand) / 0.16);
+  }
+  .field-label {
+    @apply mb-1.5 block text-sm font-medium text-ink;
+  }
+
+  /* Section heading rhythm */
+  .section {
+    @apply py-16 sm:py-20 lg:py-28;
+  }
+
+  /* Skeleton shimmer for loading states */
+  .skeleton {
+    @apply relative overflow-hidden rounded-lg bg-surface-2;
+  }
+  .skeleton::after {
+    content: "";
+    @apply absolute inset-0;
+    transform: translateX(-100%);
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.6),
+      transparent
+    );
+    animation: shimmer 1.4s infinite;
+  }
+  @keyframes shimmer {
+    100% {
+      transform: translateX(100%);
+    }
+  }
+
+  /* Hairline divider */
+  .rule {
+    @apply h-px w-full bg-line;
+  }
+}
+
+/* ============================================================
+   Scroll-reveal utility (paired with IntersectionObserver hook)
+   ============================================================ */
+.reveal {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: opacity, transform;
+}
+.reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ============================================================
+   Accessibility — honour reduced motion everywhere
+   ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+  .reveal {
+    opacity: 1;
+    transform: none;
+  }
+}
