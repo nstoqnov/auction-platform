@@ -1,3 +1,4 @@
+import { getErrorMessage } from "../utils/errorMessage";
 import React, { useEffect, useState } from "react";
 import api from "../api";
 import { currency, PLACEHOLDER } from "../components/AuctionCard";
@@ -108,7 +109,7 @@ const AdminPage = () => {
       setShowUserModal(false);
       fetchData();
     } catch (err) {
-      alert("Error saving user: " + (err.response?.data || err.message));
+      alert("Error saving user: " + (getErrorMessage(err)));
     }
   };
 
@@ -194,7 +195,7 @@ const AdminPage = () => {
       await api.delete(`/auctions/${id}`);
       fetchData();
     } catch (err) {
-      alert("Delete failed: " + (err.response?.data || err.message));
+      alert("Delete failed: " + (getErrorMessage(err)));
     }
   };
 
@@ -219,7 +220,7 @@ const AdminPage = () => {
       fetchData();
     } catch (err) {
       console.error(err);
-      alert("Error saving auction: " + (err.response?.data?.message || err.message));
+      alert("Error saving auction: " + (getErrorMessage(err)));
     }
   };
 

@@ -1,3 +1,4 @@
+import { getErrorMessage } from "../utils/errorMessage";
 import React, { useEffect, useState, useRef } from "react";
 import { useSearchParams, Link } from "react-router-dom";
 import api from "../api";
@@ -27,7 +28,7 @@ const VerifyEmailPage = () => {
       } catch (err) {
         setStatus("error");
         setMessage(
-          err.response?.data || "Verification failed. The link may be expired or invalid."
+          getErrorMessage(err, "Verification failed. The link may be expired or invalid.")
         );
       }
     };

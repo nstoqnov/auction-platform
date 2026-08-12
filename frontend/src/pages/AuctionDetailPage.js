@@ -1,3 +1,4 @@
+import { getErrorMessage } from "../utils/errorMessage";
 import { API_BASE } from "../config";
 import React, { useEffect, useState, useRef } from "react";
 import { useParams, Link } from "react-router-dom";
@@ -101,7 +102,7 @@ const AuctionDetailPage = ({ onOpenChat }) => {
       showToast("Bid placed successfully", "success");
       setBidAmount("");
     } catch (err) {
-      showToast("Bid failed: " + (err.response?.data || err.message), "error");
+      showToast("Bid failed: " + (getErrorMessage(err)), "error");
     } finally {
       setSubmitting(false);
     }

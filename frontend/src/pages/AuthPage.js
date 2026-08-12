@@ -72,9 +72,11 @@ const AuthPage = () => {
       }
     } catch (err) {
       console.error("Auth Error:", err);
+      const data = err.response?.data;
       const msg =
-        err.response?.data?.message ||
-        err.response?.data ||
+        data?.detail ||                                 // RFC 7807 ProblemDetail
+        data?.message ||                                // legacy { message }
+        (typeof data === "string" ? data : null) ||
         err.message ||
         "An error occurred";
       setError(msg);

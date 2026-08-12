@@ -21,17 +21,14 @@ public class BidController {
     }
 
     @PostMapping("/auction/{auctionId}")
-    public ResponseEntity<?> placeBid(
+    public ResponseEntity<BidDTO> placeBid(
             @PathVariable Long auctionId,
             @RequestBody BidDTO bidDTO,
             Authentication authentication) {
-
-        try {
-            BidDTO newBid = bidService.placeBid(auctionId, bidDTO.getBidderName(), bidDTO.getAmount());
-            return ResponseEntity.ok(newBid);
-        } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+        // The bidder is the authenticated user — never trusted from the request body.
+        // Exceptions propagate to GlobalExceptionHandler for correct status codes (404/400/409).
+        BidDTO newBid = bidService.placeBid(auctionId, authentication.getName(), bidDTO.getAmount());
+        return ResponseEntity.ok(newBid);
     }
 
     @GetMapping("/auction/{auctionId}")

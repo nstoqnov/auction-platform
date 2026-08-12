@@ -1,3 +1,4 @@
+import { getErrorMessage } from "../utils/errorMessage";
 import { API_BASE } from "../config";
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
@@ -87,7 +88,7 @@ const CreateAuctionPage = () => {
       navigate("/auctions");
     } catch (err) {
       console.error(err);
-      alert("Error creating auction: " + (err.response?.data?.message || err.message));
+      alert("Error creating auction: " + (getErrorMessage(err)));
     } finally {
       setUploading(false);
     }
